@@ -1,0 +1,100 @@
+{% load static %}
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="robots" content="index">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.5/dist/css/uikit.min.css" />
+
+<!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.5/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.5/dist/js/uikit-icons.min.js"></script>
+	<title>Blogpost</title>
+</head>
+<body>
+	<nav class="uk-navbar uk-navbar-container uk-margin uk-hidden@m">
+    <div class="uk-navbar-left">
+        <a class="uk-navbar-toggle" href="#offcanvas-nav-primary" uk-toggle>
+            <span uk-navbar-toggle-icon></span> <span class="uk-margin-small-left">Menu</span>
+        </a>
+
+    </div>
+</nav>
+<div id="offcanvas-nav-primary" uk-offcanvas="overlay: true">
+    <div class="uk-offcanvas-bar uk-flex uk-flex-column">
+<center><button class="uk-button uk-button-primary uk-margin-top" style = 'border-radius: 30px'>Hello, {{ request.user.first_name }}</button></center>
+       <ul class="uk-nav uk-nav-primary uk-nav-center uk-margin-auto-vertical">
+             <li><a href="#"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>Blogs</a></li>
+            <li class="uk-nav-divider"></li>
+            <li><a href="/dashboard/newpost"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>New Blog</a></li>
+            <li class="uk-nav-divider"></li>
+             <li><a href="/dashboard/stats"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>Stats</a></li>
+            <li class="uk-nav-divider"></li>
+        <li><a href='/dashboard/comments'><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>Comments</a></li>
+            <li class="uk-nav-divider"></li>
+            <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>Logout</a></li>
+           <li class="uk-nav-divider"></li>
+        </ul>
+
+    </div>
+</div>
+	<div uk-grid>
+	<div class = 'uk-width-1-4 uk-visible@m'>
+	
+<!------------------------------------------------------------------------------------------------------------------------>
+<div class = 'uk-flex uk-flex-left uk-height-viewport uk-visible@m' style ='border-right-style: solid'>
+    <div class="uk-flex uk-flex-center uk-flex-column uk-width-3-4">
+       <center><button class="uk-button uk-button-primary uk-margin-top" style = 'border-radius: 30px'>Hello, {{ request.user.first_name }}</button></center>
+        <ul class="uk-nav uk-nav-primary uk-nav-center uk-margin-auto-vertical">
+             <li><a href="#"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>Blogs</a></li>
+            <li class="uk-nav-divider"></li>
+            <li><a href="dashboard/newpost"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>New Blog</a></li>
+            <li class="uk-nav-divider"></li>
+        <li><a href="/dashboard/stats"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>Stats</a></li>
+            <li class="uk-nav-divider"></li>
+             <li><a href="/dashboard/comments"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>Comments</a></li>
+            <li class="uk-nav-divider"></li>
+            <li><a href="/logout"><span class="uk-margin-small-right" uk-icon="icon: thumbnails"></span>Logout</a></li>
+            <li class="uk-nav-divider"></li>
+        </ul>
+
+    </div>
+</div>
+</div>
+
+<!------------------------------------------------------------------------------------------------------------------------------->
+<div class = 'uk-width-3-4@m uk-width-1-1@s'>
+	<hr>
+	<center><h1><strong style = 'color: green'>Blog</strong><strong style="color:red">Post</strong></h1></center>
+	<hr>
+	<hr>
+    <h2>Your Post</h2>
+    <div  class = 'uk-height-large'>    
+    {% for i in post %}
+    <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2 uk-width-1-1 uk-margin" uk-grid>
+    <div class="uk-card-media-left uk-cover-container uk-width-1-1@s uk-width-1-2@m uk-height-medium">
+        {% if i.img  %}
+        <img src= "{{ i.img }}" alt="" uk-cover height = '5vw' width = '7vw' loading = 'lazy'>
+        {% else %}
+        <img src="{%static 'post/img.jpg' %}" alt="" uk-cover height = '5vw' width = '7vw' loading = 'lazy'>
+        {% endif %}
+        
+    </div>
+    <div class = 'uk-width-1-1@s uk-width-1-2@m'>
+        <div class="uk-card-body uk-width-1-1 uk-heght-small">
+            <h3 class="uk-card-title">{{ i.headline }}</h3>
+            <div class="uk-card-footer">
+                        <a href="/post/{{ i.post_id }}" class="uk-button uk-button-text uk-align-right@m">Read more</a>
+                        <a href="/edit/{{ i.post_id }}" class="uk-button uk-button-text uk-align-left@m">Edit</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+    {% endfor %}
+</div>
+</div>
+
+</body>
+</html>

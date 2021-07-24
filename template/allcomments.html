@@ -1,0 +1,40 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="robots" content="index">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.5/dist/css/uikit.min.css" />
+
+<!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.5/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.5/dist/js/uikit-icons.min.js"></script>
+	<title>Comments</title>
+</head>
+<body  style="background-color : #dae3dd;">
+	<center><h2 class='uk-text-bolder'>Comments</h2></center>
+	<div class = 'uk-margin uk-width-1-1@m uk-width '>
+            {% for i in comments %}
+              <center clas = 'uk-margin-bottom'>
+              <article class="uk-comment uk-width-1-3@m uk-width-1-1@s" style="background-color: white">
+                  <header class="uk-comment-header">
+                    <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                        <div class="uk-width-expand">
+                            <h4 class="uk-comment-title uk-margin-remove" style="color: red">
+                                <a class="uk-link-reset" href="#">{{ i.username }}</a>
+                            </h4>
+                        </div>
+                    </div>
+                  </header>
+        <div class="uk-comment-body">
+        <p>{{ i.comments }}</p>
+    </div>
+</article>
+<a class="uk-button uk-button-primary" href = '/post/{{ i.post_id }}'>Show Post</a><br>
+         <!--<button class="uk-button uk-button-danger" onclick="dltcomment('{{ i.comment_id }}')">Delete</button>-->
+</center>
+            {% endfor %}
+        </div>        
+
+</body>
+</html>

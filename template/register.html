@@ -1,0 +1,95 @@
+<html>
+   <head>
+      <title>Register</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/css/uikit.min.css" />
+      <!-- UIkit JS -->
+      <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit-icons.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+      <script>
+      	//customize your design here
+        function customize()
+        {
+            // customize here
+              // url(place_your_link_here)
+              image_link = "https://www.designyourway.net/blog/wp-content/uploads/2018/01/3d-Desktop-Backgrounds.jpg"
+              login_panel_color = '#001a33'
+              logo_first = 'Blog'
+              logo_first_color = 'yellow'
+              logo_second = 'spot'
+              logo_second_color = 'red'
+            // customizaton End
+            image_link = 'url('+image_link+')'
+            $('#login_panel').css('background-color', login_panel_color)
+            $('#logo_first').html(logo_first)
+            $('#logo_first').css('color',logo_first_color)
+            $('#logo_second').html(logo_second)
+            $('#logo_second').css('color',logo_second_color)
+            $('#sign').css('color',sign_color)
+          }
+            function border(i){
+            	a = document.getElementById(i)
+            	a.style.borderLeftStyle = 'solid'
+            	a.style.borderLeftWidth= '7px'
+            	a.style.borderLeftColor= 'lightblue'
+            }
+            function rest(i)
+            {
+            	a = document.getElementById(i)
+            	a.style.borderLeftStyle = 'none';
+            }
+      </script>
+   </head>
+   <body onload='customize()'>
+    <div>
+        <div id = 'main' style="background-image: url('https://www.designyourway.net/blog/wp-content/uploads/2018/01/3d-Desktop-Backgrounds.jpg');" class="uk-background-cover uk-height-1-1 uk-flex uk-flex-column uk-flex-center uk-flex-middle">
+        	<div id = 'login_panel' class='uk-height-xlarge uk-width-xlarge uk-flex uk-flex-column uk-flex-center uk-flex-middle' style="opacity: 0.9">
+        	<h1><span id = 'logo_first'></span><strong><span id = 'logo_second'></span></strong></h1>
+                <form class="toggle-class" method="POST">
+                {% csrf_token %}
+                <fieldset class="uk-fieldset">
+                 <div class="uk-margin">
+                  <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                        <input class="uk-input uk-form-width-1-2 user-brder" name = 'name' placeholder="Name..." id = 'name' onclick="border('name')" onfocusout = "rest('name')">
+                    </div>
+                </div>
+                  <div class="uk-margin">
+                  <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                        <input class="uk-input uk-form-width-1-2 user-brder" name = 'email' placeholder="Email..." id = 'email' onclick="border('email')" onfocusout = "rest('email')">
+                    </div>
+                </div>
+                <div class="uk-margin">
+                	<div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                        <input class="uk-input uk-form-width-1-2 user-brder" name = 'username' placeholder="Username..." id = 'usr' onclick="border('usr')" onfocusout = "rest('usr')">
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                        <input type = 'password' class="uk-input uk-form-width-1-2" name = 'password1' placeholder="Password..." id = 'pas' onclick="border('pas')" onfocusout = "rest('pas')">
+                    </div>
+                 </div>
+                 <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                        <input type = 'password' class="uk-input uk-form-width-1-2" name = 'password2' placeholder=" Confirm Password..." id = 'conf' onclick="border('conf')" onfocusout = "rest('conf')">
+                    </div>
+                 </div>
+                    </fieldset>
+                     <center>
+                      <button class="uk-button uk-button-primary uk-button-large">Sign Up</button>
+                      {% for i in messages %}
+                      <h3>{{ i }}</h3>
+                      {% endfor %}
+                    </center>
+
+                </form>
+                <a style = 'color:white'>Forget Password</a>
+                <h5 style = 'color:white'>Already have Account ? <a href = '/login'>Sign In</a></h5>
+    </div>
+   </body>
+</html>

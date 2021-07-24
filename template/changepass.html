@@ -1,0 +1,94 @@
+<html>
+   <head>
+      <title>Log In</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/css/uikit.min.css" />
+      <!-- UIkit JS -->
+      <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit-icons.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+      <script>
+        //customize your design here
+        function customize()
+        {
+            // customize here
+              // url(place_your_link_here)
+              image_link = "https://news.bitcoin.com/wp-content/uploads/2016/01/cover66666.jpg"
+              login_panel_color = '#001a33'
+              logo_first = 'Blog'
+              logo_first_color = 'yellow'
+              logo_second = 'Post'
+              logo_second_color = 'red'
+              sign_text = 'Designed and Developed by Harsh' 
+              sign_color = 'yellow'
+            // customizaton End
+            image_link = 'url('+image_link+')'
+            $('#main').css('background-image', image_link);
+            $('#login_panel').css('background-color', login_panel_color)
+            $('#logo_first').html(logo_first)
+            $('#logo_first').css('color',logo_first_color)
+            $('#logo_second').html(logo_second)
+            $('#logo_second').css('color',logo_second_color)
+            $('#sign').css('color',sign_color)
+            write(50,sign_text)
+          }
+          function write(speed , txt){
+            i = 0
+            speed = speed
+            txt = txt
+            typeWriter()
+          function typeWriter() {
+                if (i < txt.length) {
+                    document.getElementById("sign").innerHTML += txt.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                 }
+            }
+            }
+            function border(i){
+              a = document.getElementById(i)
+              a.style.borderLeftStyle = 'solid'
+              a.style.borderLeftWidth= '7px'
+              a.style.borderLeftColor= 'lightblue'
+            }
+            function rest(i)
+            {
+              a = document.getElementById(i)
+              a.style.borderLeftStyle = 'none';
+            }
+      </script>
+   </head>
+   <body onload='customize()'>
+    <div>
+        <div id = 'main' class="uk-background-cover uk-height-1-1 uk-flex uk-flex-column uk-flex-center uk-flex-middle">
+          <div id = 'login_panel' class='uk-height-large uk-width-large uk-flex uk-flex-column uk-flex-center uk-flex-middle' style="opacity: 0.9">
+          <h1><span id = 'logo_first'></span><strong><span id = 'logo_second'></span></strong></h1>
+                <form method = 'POST' class="toggle-class">
+                  {% csrf_token %}
+                <fieldset class="uk-fieldset">
+                <div class="uk-margin">
+                  <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                        <input type = 'password' required class="uk-input uk-form-width-1-2 user-brder" name = 'password1' placeholder="Password...">
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                        <input required type='password' class="uk-input uk-form-width-1-2" name = 'password2' placeholder="Confirm Password..." >
+                    </div>
+                 </div>
+                    </fieldset>
+                     <center><button class="uk-button uk-button-primary uk-button-large">Change Password</button></center>
+                </form>
+                <h5 style = 'color:white'>Want to login ? <a href='/login'>Log In</a></h5>
+                <div style="color:yellow;">
+                    {% for i in messages %}
+                    <center><h3 style="color:yellow;">{{ i }}</h3></center>
+                    {% endfor %}
+                </div>
+          </div>
+        </div>
+    </div>
+   </body>
+</html>

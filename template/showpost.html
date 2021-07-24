@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>POST</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/css/uikit.min.css" />
+      <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit-icons.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+    function like(){
+
+        like_val = $('#like_btn').attr('name')
+        dislike_val = $('#dislike_btn').attr('name')
+        if (like_val == '1' && dislike_val == '0' )
+        {
+           $('#like_btn').attr('name', '0');
+           $('#like_btn').attr('class', 'uk-button uk-button uk-width-1-1');
+        }
+        else if(like_val == '0' && dislike_val == '1')
+        {
+           $('#like_btn').attr('name', '1');
+           $('#like_btn').attr('class', 'uk-button uk-button-primary uk-width-1-1');
+           $('#dislike_btn').attr('name', '0');
+           $('#dislike_btn').attr('class', 'uk-button uk-button uk-width-1-1');  
+        }
+        else if(like_val == '0' && dislike_val == '0' )
+        {
+          $('#like_btn').attr('name', '1');
+           $('#like_btn').attr('class', 'uk-button uk-button-primary uk-width-1-1');
+
+        }
+        $.ajax(
+    {
+        type:"GET",
+        url: "/reaction/{{ post.post_id }}/like",
+    
+        success: function( response ) 
+        {
+            likes = JSON.parse(response["likes"])
+            dislikes = JSON.parse(response["dislikes"])
+            $('#likes').text(likes)
+            $('#dislikes').text(dislikes)
+        }
+     });
+
+    }
+
+    function dislike(){
+        like_val = $('#like_btn').attr('name')
+        dislike_val = $('#dislike_btn').attr('name')
+        if (dislike_val == '1' && like_val == '0' )
+        {
+           $('#dislike_btn').attr('name', '0');
+           $('#dislike_btn').attr('class', 'uk-button uk-button uk-width-1-1');
+        }
+        else if(dislike_val == '0' && like_val == '1')
+        {
+           $('#dislike_btn').attr('name', '1');
+           $('#dislike_btn').attr('class', 'uk-button uk-button-danger uk-width-1-1');
+           $('#like_btn').attr('name', '0');
+           $('#like_btn').attr('class', 'uk-button uk-button uk-width-1-1');  
+        }
+        else if(dislike_val == '0' && like_val == '0' )
+        {
+          $('#dislike_btn').attr('name', '1');
+           $('#dislike_btn').attr('class', 'uk-button uk-button-danger uk-width-1-1');
+
+        }
+        $.ajax(
+    {
+        type:"GET",
+        url: "/reaction/{{ post.post_id }}/dislike",
+    
+        success: function( response ) 
+        {
+            likes = JSON.parse(response["likes"])
+            dislikes = JSON.parse(response["dislikes"])
+            $('#likes').text(likes)
+            $('#dislikes').text(dislikes)
+        }
+     });
+
+    }
+
+    function comment(){
+        text = $('#comment').val()
+        comment_url = "/update/{{ post.post_id }}"
+        $.ajax(
+    {
+        type:"GET",
+        url: "/comment/{{ post.post_id }}",
+        data:{
+                 comment: $('#comment').val()
+        },
+        success: function( response ) 
+        {
+          len_comment = response['len_comment']
+          $('#show_comment').load(comment_url)
+          $('#len_comment').text(len_comment)
+          $('#comment').val('')    
+        }
+     });
+
+    }        
+    
+    function dltcomment(x){
+        url =  "/comment/{0}/delete".replace('{0}', x)
+        comment_url = "/update/{{ post.post_id }}"  
+        $.ajax(
+    {
+        type:"GET",
+        url: url ,
+
+        success: function( response ) 
+        {
+            len_comment = response['len_comment']
+            $('#show_comment').load(comment_url)
+            $('#len_comment').text(len_comment)
+        }
+     });
+
+    }
+
+    </script>
+ <style type="text/css">
+     .post img{
+        width:300px;
+        height:300px;
+     }
+ </style>
+</head>
+<body class= 'uk-padding' style="background-color : #dae3dd;">
+	<div class = 'uk-padding'>
+	 <div class = 'uk-margin uk-width-1-1 uk-height-large' uk-slideshow = 'ratio:15:6;min-height:300'>
+       	<ul class="uk-slideshow-items">
+       	<li>
+          {% if post.img %}
+            <img src="{{ post.img }}" alt="" uk-cover>
+          {% else %}
+             <img src="{%static 'post/img.jpg' %}" alt="" uk-cover>
+          {% endif %}
+            <div class="uk-overlay uk-overlay-primary uk-position-bottom uk-text-center uk-transition-slide-bottom">
+                <h3 class="uk-margin-remove">{{ post.heading }}</h3>
+                <span class="uk-badge">{{ post.category }}</span>
+            </div>
+        </li>
+    </ul>
+    </div>
+</div>
+    <div style = 'background-color: white' class='post uk-margin uk-padding'>
+	<center>
+		<h1 style = 'color:red'><strong><u>{{ post.headline }}</u></strong></h1>
+	</center>
+	<p>Written by <strong><a href = '/user/{{ post.username }}'>{{ post.username }}</a></strong> on {{ post.date }}</p>
+	{{ post.content|safe }}
+     </div>
+
+     <div uk-grid>
+        <div class = 'uk-width-1-3'>
+            <div uk-inline class = 'uk-width-1-1'>
+                <center>
+                    {% if react and react.reaction %}
+                   <button id = 'like_btn' class="uk-button uk-button-primary uk-width-1-1" name = '1' onclick="like()">
+                    <span uk-icon="heart"></span>
+                    Like <br>
+                    <div id = 'likes'  >{{ likes }}</div>
+                </button>
+                {% elif request.user.is_authenticated == 0 %}
+                <button class="uk-button uk-button uk-width-1-1" onclick="alert('login to continue')">
+                    <span uk-icon="heart"></span>
+                    Like <br>
+                    <div id = 'likes'  >{{ likes }}</div>
+                </button>
+                {% else %}
+                <button id = 'like_btn' class="uk-button uk-button uk-width-1-1" name = '0' onclick="like()">
+                <span uk-icon="heart"></span>
+                Like <br>
+                 <div id = 'likes'  >{{ likes }}</div>
+                </button>
+                {% endif %}
+                </center>
+            </div>
+        </div>
+        <div class = 'uk-width-1-3'>
+            <div uk-inline class = 'uk-width-1-1'>
+                <center>
+                   <button class="uk-button uk-button uk-width-1-1">
+                    <span uk-icon="comment"></span>
+                    Comments<br>
+                    <div id = 'len_comment'>{{ comments|length }}</div>
+                </button>
+                </center>
+        </div>
+    </div>
+        <div class = 'uk-width-1-3'>
+            <div uk-inline class = 'uk-width-1-1'>
+                <center>
+                   {% if react and react.reaction == False %}
+                   <button id = 'dislike_btn' class="uk-button uk-button-danger uk-width-1-1" name = '1' onclick="dislike()">
+                    <span uk-icon="trash"></span>
+                    Disike <br>
+                    <div id = 'dislikes'  >{{ dislikes }}</div>
+                </button>
+                {% elif request.user.is_authenticated == 0 %}
+                <button class="uk-button uk-button uk-width-1-1" onclick="alert('login to continue')">
+                    <span uk-icon="trash"></span>
+                    Disike <br>
+                    <div id = 'likes'  >{{ dislikes }}</div>
+                </button>
+                {% else %}
+                <button id = 'dislike_btn' class="uk-button uk-button uk-width-1-1"name = '0'  onclick="dislike()">
+                    <span uk-icon="trash"></span>
+                    Dislike <br>
+                    <div id = 'dislikes'  >{{ dislikes }}</div>
+                </button>
+                {% endif %}
+                </center>
+        </div>
+    </div>
+</div>
+    <!-------------------------------------------comment ------------------------------------------------------->
+    <br>
+                 <!----------------------------add comment --------------------------------------->
+        <div class = 'uk-width-1-1'>
+        <center> 
+        <div class = 'uk-margin uk-width-1-3@m uk-width-1-1@s'>
+            <div class="uk-margin">
+
+                <textarea id = 'comment' class="uk-textarea" rows="3" placeholder="Write your Comment Here" name="comment"></textarea>
+            </div>
+            {% if request.user.is_authenticated == 0 %}
+                <button class="uk-button uk-button-primary" onclick="alert('login to continue')">Comment</button>
+            {% else %}
+                <button class="uk-button uk-button-primary" onclick="comment()">Comment</button>
+            {% endif %}
+        </div>
+        </center>
+        </div>
+                <!--------------------------------------------------------------------------------> 
+                <!--------------------------show comment ----------------------------------------->
+        <div id = 'show_comment' class = 'uk-margin uk-width-1-1@m uk-width'>
+            {% for i in comments %}
+              <center>
+              <article class="uk-comment uk-width-1-3@m uk-width-1-1@s" style="background-color: white">
+                  <header class="uk-comment-header">
+                    <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                        <div class="uk-width-expand">
+                            <h4 class="uk-comment-title uk-margin-remove" style="color: red">
+                                <a class="uk-link-reset" href="#">{{ i.username }}</a>
+                            </h4>
+                        </div>
+                    </div>
+                  </header>
+        <div class="uk-comment-body">
+        <p>{{ i.comments }}</p>
+    </div>
+</article>
+{% if i.username == request.user.username or post.username == request.user.username %}
+         <button class="uk-button uk-button-danger" onclick="dltcomment('{{ i.comment_id }}')">Delete</button>
+{% endif %}
+</center>
+            {% endfor %}
+        </div>        
+    <!-------------------------------------------------------------------------------------------------------------->
+     <div style="background-color:white">
+     	<h3 style="color:grey"><strong>Also Read</strong></h3>
+     	<hr>
+     	<div uk-grid>
+        {% for i in also_read %}
+     	<div class="uk-margin-large-left uk-card uk-card-default uk-width-1-4@m uk-width-1-1@s">
+    		<a href = '/post/{{ i.post_id }}'>
+            <div class="uk-card-media-top ">
+                <img src="{{ i.img.url }}" alt="">
+            </div>
+            <div class="uk-card-body">
+            	<span>{{ i.date }}</span>
+            	<span class="uk-badge">{{ i.category }}</span>
+                <h3 class="uk-card-title">{{ i.heading }}</h3>
+            </div>
+        </a>
+        </div>	
+     	{% endfor %}
+     	</div>
+     </div>
+     		
+</body>
+</html>

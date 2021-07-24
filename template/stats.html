@@ -1,0 +1,70 @@
+{% load customtemp %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Status</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/css/uikit.min.css" />
+      <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit-icons.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+</head>
+<body style = 'background-image:  url("https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=967&q=80")'>
+	<center class = 'uk-padding-large '>
+    <div class = 'uk-width-2-3' uk-grid>
+    	<div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Likes : {% totallike request.user.username %}</div>
+    	<div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Disikes : {% totaldislike request.user.username %}</div>
+    	<div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Comments : {% totalcomment request.user.username %}</div>
+    </div>
+    	<hr>
+    	<hr>
+    	<h3 style = 'color:Red'>Post Details</h3>
+    	<hr>
+    	<hr>   
+    <table style = 'border-bottom: solid;background-color:white' class="uk-table uk-table-hover uk-table-divider uk-visible@m">
+    <thead>
+        <tr>
+            <th style = 'border-style: solid;'><strong>Post Id</strong></th>
+            <td style = 'border-right-style: solid;border-top-style: solid;border-bottom-style: solid;'>
+              <strong>Post Heading</strong>
+            </td>
+            <td style = 'color:green;border-right-style: solid;border-top-style: solid;border-bottom-style: solid;'>
+                <strong>Likes</strong>
+            </td>
+            <td style = 'color:red;border-right-style: solid;border-top-style: solid;border-bottom-style: solid;'>
+                <strong>Dislikes</strong>
+            </td>
+            <td style = 'color:grey;border-right-style: solid;border-top-style: solid;border-bottom-style: solid;'>
+              <strong>Comments</strong>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+    	{% for i in post_detail %}
+        <tr>
+            <td style = 'border-right-style: solid;border-left-style: solid'>{{ i.post_id }}</td>
+            <td style = 'border-right-style: solid'>{{ i.Headline }}</td>
+            <td style = 'border-right-style: solid'>{{ i.Likes }}</td>
+            <td style = 'border-right-style: solid'>{{ i.Dislikes }}</td>
+            <td style = 'border-right-style: solid'>{{ i.Comments }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div style = "border-style: solid;background-color: white" class = 'uk-hidden@m'>
+    {% for i in post_detail %}
+    <div>
+        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>POST ID :</strong>{{ i.post_id }} </div>
+        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Headline :</strong>{{ i.Headline }} </div>
+        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Likes :</strong>{{ i.Likes }} </div>
+        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Dislikes :</strong>{{ i.Dislikes }} </div>
+        <div class = 'uk-padding-small'><strong>Comments :</strong>{{ i.Comments }} </div>
+    </div>
+    <hr>
+    {% endfor %}
+</div>
+</center>
+
+</body>
+</html>
