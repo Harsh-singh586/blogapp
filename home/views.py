@@ -15,7 +15,7 @@ from django.core import serializers
 import json
 from django.contrib.auth.decorators import login_required
 from django.views.defaults import page_not_found
-import requests
+import os
 # Create your views here.
 
 def landing(request):
@@ -45,7 +45,7 @@ def send_mail(to, subject, content):
         to_emails= to,
         subject= subject,
         html_content = content)
-	sg = SendGridAPIClient('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')
+	sg = SendGridAPIClient(os.environ['SENDGRID_API'])
 	response = sg.send(message)
 	code = response.status_code
 	return code
