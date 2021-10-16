@@ -4,7 +4,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from .models import Page, Comments, Reaction, Emailverify, Forgetpass
+from .models import Page, Comments, Reaction, Emailverify, Forgetpass, Stats
 import secrets
 import sendgrid
 from sendgrid import SendGridAPIClient
@@ -15,7 +15,10 @@ from django.core import serializers
 import json
 from django.contrib.auth.decorators import login_required
 from django.views.defaults import page_not_found
+import os
 import requests
+from django.utils import timezone
+from django.db.models import Count
 # Create your views here.
 
 def landing(request):
@@ -45,7 +48,7 @@ def send_mail(to, subject, content):
         to_emails= to,
         subject= subject,
         html_content = content)
-	sg = SendGridAPIClient('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')
+	sg = SendGridAPIClient(os.environ['SENDGRID_API'])
 	response = sg.send(message)
 	code = response.status_code
 	return code
@@ -196,6 +199,28 @@ def showpost(request,key):
 	flag = Page.objects.filter(post_id = key)
 	if flag:
 		post = Page.objects.get(post_id = key)
+		if request.method == 'POST':
+			ip = request.POST['ip']
+			url = 'https://ipwhois.app/json/{x}'.format(x = ip)
+			response = requests.get(url).json()
+			country = response['country']
+			region = response['region']
+			date = timezone.now().date()
+			time = timezone.now().time()
+			os1 = request.POST['os']
+			browser = request.POST['browser']
+			inst = Stats()
+			inst.author = post.username
+			inst.post_id = key
+			inst.ip = ip 
+			inst.country = country
+			inst.region = region
+			inst.date = date 
+			inst.time = time
+			inst.visitoros = os1
+			inst.browser = browser 
+			inst.save()
+			print(url, ip, post.username, key, country, region, date, time, os1, browser)
 		like = len(Reaction.objects.filter(post_id = key, reaction = True))
 		dislike = len(Reaction.objects.filter(post_id = key, reaction = False))
 		comments = Comments.objects.filter(post_id = key)
@@ -212,11 +237,22 @@ def showpost(request,key):
 
 @login_required(login_url = '/login')
 def stats(request):
-	total_likes = 0
-	total_dislikes = 0
-	total_comments = 0
-	post_detail = requests.get('http://127.0.0.1:8000/api/apikey/BSTmRn31WZjMUxjL7Zf3dsqK0p0/statsbypost').json()
-	return render(request,'stats.html',context={'total_likes':total_likes,'total_dislikes':total_dislikes,'total_comments':total_comments, 'post_detail' : post_detail})
+	total_likes = Reaction.objects.filter(author = request.user.username, reaction = True).count()
+	total_dislikes = Reaction.objects.filter(author = request.user.username, reaction = False).count()
+	total_comments = Comments.objects.filter(author = request.user.username).count()
+	post = Page.objects.filter(username = request.user.username)
+	countrydic = Stats.objects.values('country').annotate(mycount = Count('country'))
+	country = list(countrydic.values_list('country', flat =True))
+	country_count = list(countrydic.values_list('mycount', flat =True))
+	visitorosdic = Stats.objects.values('visitoros').annotate(mycount = Count('visitoros'))
+	visitoros = list(visitorosdic.values_list('visitoros', flat =True))
+	visitoros_count = list(visitorosdic.values_list('mycount', flat =True))
+	browserdic = Stats.objects.values('browser').annotate(mycount = Count('browser'))
+	browser = list(browserdic.values_list('browser', flat =True))
+	browser_count = list(browserdic.values_list('mycount', flat =True))
+	graphdata = {'countrydata' : {'country' : country, 'count' : country_count}, 'visitoros' : {'visitoros' : visitoros, 'count' : visitoros_count}, 'browser' : {'browser': browser, 'count' : browser_count}}
+	print(country, country_count, visitoros, visitoros_count, browser, browser_count)
+	return render(request,'stats.html',context={'posts':post,'total_likes':total_likes,'total_dislikes':total_dislikes,'total_comments':total_comments,'country' : country, 'graphdata' : graphdata})
 
 @login_required(login_url = '/login')
 def like(request, key):
@@ -225,6 +261,7 @@ def like(request, key):
 		page = Page.objects.get(post_id = key)
 		if not flag:
 			inst = Reaction()
+			inst.author = request.user.username
 			inst.username = request.user.username
 			inst.reaction = True
 			inst.post_id = key
@@ -251,6 +288,7 @@ def dislike(request, key):
 		page = Page.objects.get(post_id = key)
 		if not flag:
 			inst = Reaction()
+			inst.author = request.user.username
 			inst.username = request.user.username
 			inst.reaction = False
 			inst.post_id = key
@@ -276,6 +314,7 @@ def comment(request, key):
 	page = Page.objects.get(post_id = key)
 	if request.method == "GET":
 		comment = request.GET['comment']
+		inst.author = request.user.username
 		inst.username = request.user.username
 		inst.post_id = key
 		k = create_key() 
@@ -321,6 +360,8 @@ def edit_post(request, key):
 		keyword = request.POST['keyword']
 		category = request.POST['category']
 		img = request.POST['get_img']
+		print(img)
+		print(type(img))
 		inst = Page.objects.get(post_id = key)
 		inst.headline = heading
 		inst.content = cont
@@ -344,10 +385,9 @@ def user(request, key):
 	    post = post[0 : min(9, l)]
 	return render(request, 'category.html', {'post' : post, 'key' : key})
 
-@login_required(login_url = '/login')
 def all_comments(request):
 	username = request.user.username
-	postid = Page.objects.filter(username = username).values_list('post_id')
+	postid = Page.objects.filter(username = 'harsh').values_list('post_id')
 	postid_lst =  [i[0] for i in postid]
 	comments = Comments.objects.filter(post_id__in = postid_lst)
 	return render(request, 'allcomments.html', {'comments':comments})

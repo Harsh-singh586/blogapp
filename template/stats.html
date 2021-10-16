@@ -2,26 +2,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Status</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/css/uikit.min.css" />
       <!-- UIkit JS -->
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit-icons.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
 </head>
 <body style = 'background-image:  url("https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=967&q=80")'>
-	<center class = 'uk-padding-large '>
+    <center class = 'uk-padding-large '>
     <div class = 'uk-width-2-3' uk-grid>
-    	<div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Likes : {% totallike request.user.username %}</div>
-    	<div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Disikes : {% totaldislike request.user.username %}</div>
-    	<div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Comments : {% totalcomment request.user.username %}</div>
+        <div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Likes : {% totallike request.user.username %}</div>
+        <div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Disikes : {% totaldislike request.user.username %}</div>
+        <div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Comments : {% totalcomment request.user.username %}</div>
+        <div style = 'border-style: solid;height: 8vw' class = 'uk-width-1-4@m uk-width-1-2@s'>Total Views : {% totalviews request.user.username %}</div>
     </div>
-    	<hr>
-    	<hr>
-    	<h3 style = 'color:Red'>Post Details</h3>
-    	<hr>
-    	<hr>   
+        <hr>
+        <hr>
+        <h3 style = 'color:Red'><strong><u>Post Details</u></strong></h3>
+        <hr>
+        <hr>   
     <table style = 'border-bottom: solid;background-color:white' class="uk-table uk-table-hover uk-table-divider uk-visible@m">
     <thead>
         <tr>
@@ -38,33 +41,110 @@
             <td style = 'color:grey;border-right-style: solid;border-top-style: solid;border-bottom-style: solid;'>
               <strong>Comments</strong>
             </td>
+            <td style = 'color:grey;border-right-style: solid;border-top-style: solid;border-bottom-style: solid;'>
+              <strong>Views</strong>
+            </td>
         </tr>
     </thead>
     <tbody>
-    	{% for i in post_detail %}
+        {% for i in posts %}
         <tr>
             <td style = 'border-right-style: solid;border-left-style: solid'>{{ i.post_id }}</td>
-            <td style = 'border-right-style: solid'>{{ i.Headline }}</td>
-            <td style = 'border-right-style: solid'>{{ i.Likes }}</td>
-            <td style = 'border-right-style: solid'>{{ i.Dislikes }}</td>
-            <td style = 'border-right-style: solid'>{{ i.Comments }}</td>
+            <td style = 'border-right-style: solid'>{{ i.headline }}</td>
+            <td style = 'border-right-style: solid'>{% likes i.post_id %}</td>
+            <td style = 'border-right-style: solid'>{% dislikes i.post_id %}</td>
+            <td style = 'border-right-style: solid'>{% comments i.post_id %}</td>
+            <td style = 'border-right-style: solid'>{% views i.post_id %}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<div style = "border-style: solid;background-color: white" class = 'uk-hidden@m'>
-    {% for i in post_detail %}
-    <div>
-        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>POST ID :</strong>{{ i.post_id }} </div>
-        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Headline :</strong>{{ i.Headline }} </div>
-        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Likes :</strong>{{ i.Likes }} </div>
-        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Dislikes :</strong>{{ i.Dislikes }} </div>
-        <div class = 'uk-padding-small'><strong>Comments :</strong>{{ i.Comments }} </div>
+<div style = "border-style: solid;" class = 'uk-hidden@m'>
+    {% for i in posts %}
+    <div class="uk-margin-bottom" style="background-color: white">
+        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>POST ID : {{ i.post_id }}</strong> </div>
+        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Headline : {{ i.headline }}</strong> </div>
+        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Likes : {% likes i.post_id %}</strong></div>
+        <div style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Dislikes : {% dislikes i.post_id %}</strong></div>
+        <div  style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Comments :</strong>{% comments i.post_id %} </div>
+        <div  style="border-bottom-style: solid" class = 'uk-padding-small'><strong>Views :</strong>{% views i.post_id %}</div>
     </div>
     <hr>
     {% endfor %}
 </div>
+<h2>Country Wise Visitor</h2>
+<div class= 'uk-width-1-2@m uk-width-1-1@s uk-align-center'>
+<canvas id="countryvisit" class = 'uk-height-small uk-width-1-4 uk-background-muted'></canvas>
+</div>
+<h2>Visitor By OS</h2>
+<div class= 'uk-width-1-2@m uk-width-1-1@s uk-align-center'>
+<canvas id="osvisit" class = 'uk-height-small uk-width-1-4 uk-background-muted'></canvas>
+</div>
+<h2>Visitor By Browser</h2>
+<div class= 'uk-width-1-2@m uk-width-1-1@s uk-align-center'>
+<canvas id="browservisit" class = 'uk-height-small uk-width-1-4 uk-background-muted'></canvas>
+</div>
+</div>
 </center>
 
 </body>
+<script>
+var countryvisit = document.getElementById('countryvisit').getContext('2d');
+var myChart = new Chart(countryvisit, {
+    type: 'doughnut',
+    data: {
+        labels: {{ graphdata.countrydata.country|safe }},
+        datasets: [{
+            label: 'Country and Visitors',
+            data: {{ graphdata.countrydata.count|safe }},
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+var osvisit = document.getElementById('osvisit').getContext('2d');
+var osChart = new Chart(osvisit, {
+    type: 'doughnut',
+    data: {
+        labels: {{ graphdata.visitoros.visitoros|safe }},
+        datasets: [{
+            label: 'OS and Visitors',
+            data: {{ graphdata.visitoros.count|safe }},
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+var browservisit = document.getElementById('browservisit').getContext('2d');
+var browserChart = new Chart(browservisit, {
+    type: 'doughnut',
+    data: {
+        labels: {{ graphdata.browser.browser|safe }},
+        datasets: [{
+            label: 'Browser and Visitors',
+            data: {{ graphdata.browser.count|safe }},
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
 </html>

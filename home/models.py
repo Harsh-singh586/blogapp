@@ -15,6 +15,7 @@ class Page(models.Model):
 		return self.post_id
 
 class Comments(models.Model):
+	author = models.CharField(max_length = 30)
 	username = models.CharField(max_length = 30)
 	post_id = models.CharField(max_length = 30)
 	comment_id = models.CharField(max_length = 30,default = None)
@@ -23,6 +24,7 @@ class Comments(models.Model):
 		return self.post_id
 
 class Reaction(models.Model):
+	author = models.CharField(max_length = 30)
 	username = models.CharField(max_length = 30)
 	post_id = models.CharField(max_length = 30)
 	reaction = models.BooleanField()
@@ -37,3 +39,13 @@ class Forgetpass(models.Model):
 	username = models.CharField(max_length = 10)
 	verification_key = models.CharField(max_length = 16)
 
+class Stats(models.Model):
+	author = models.CharField(max_length = 30)
+	post_id = models.CharField(max_length = 30)
+	ip = models.CharField(max_length = 30)
+	country = models.CharField(max_length = 30)
+	region = models.CharField(max_length = 30)
+	date = models.DateField()
+	time = models.TimeField()
+	visitoros = models.CharField(max_length = 30, default = 'other')
+	browser = models.CharField(max_length = 30, default = 'other')

@@ -12,3 +12,4 @@ requests==2.22.0
 djangorestframework==3.11.1
 psycopg2==2.8.6
 sendgrid==6.4.8
+requests==2.22.0

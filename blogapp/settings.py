@@ -23,7 +23,7 @@ TEMP_DIR = os.path.join(BASE_DIR,"template")
 SECRET_KEY = 'n+i11*rmgc8dynuekev291*4r0yu&3jw6s6fbtj&dj(km)1z@d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['myblogspot.herokuapp.com','127.0.0.1']
 

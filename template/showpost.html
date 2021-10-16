@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>POST</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POST</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/css/uikit.min.css" />
       <!-- UIkit JS -->
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.8/dist/js/uikit.min.js"></script>
@@ -124,6 +124,62 @@
 
     }
 
+    ip = ''
+
+    if (navigator.userAgent.indexOf("Win") != -1) os = 
+          "Windows";
+        if (navigator.userAgent.indexOf("Mac") != -1) os = 
+          "Macintosh";
+        if (navigator.userAgent.indexOf("Linux") != -1) os = 
+          "Linux OS";
+        if (navigator.userAgent.indexOf("Android") != -1) os = 
+          "Android OS";
+        if (navigator.userAgent.indexOf("like Mac") != -1) os = 
+          "iOS";
+        if (navigator.appVersion.indexOf("X11") != -1) os = 
+          "UNIX OS";
+        if (navigator.appVersion.indexOf("Linux") != -1) os = 
+          "Linux OS"
+
+      if((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1 ) 
+    {
+        browser = 'Opera';
+    }
+    else if(navigator.userAgent.indexOf("Chrome") != -1 )
+    {
+        browser = 'Chrome';
+    }
+    else if(navigator.userAgent.indexOf("Safari") != -1)
+    {
+        browser = 'Safari';
+    }
+    else if(navigator.userAgent.indexOf("Firefox") != -1 ) 
+    {
+         browser = 'Firefox';
+    }
+    else if((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) //IF IE > 10
+    {
+      browser = 'IE'; 
+    }  
+    else 
+    {
+       browser = 'unknown';
+    }
+
+    $.getJSON("https://api.ipify.org?format=json",
+                                          function(response) {
+  
+            // Setting text of element P with id gfg
+            alert(response.ip);
+             $.ajax({
+                type: 'POST',
+                url: window.location.pathname,
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}', ip : response.ip, os : os, browser : browser },
+                dataType: "text",
+                success: function(resultData) { alert("Save Complete") }
+        });
+            })
+
     </script>
  <style type="text/css">
      .post img{
@@ -133,10 +189,10 @@
  </style>
 </head>
 <body class= 'uk-padding' style="background-color : #dae3dd;">
-	<div class = 'uk-padding'>
-	 <div class = 'uk-margin uk-width-1-1 uk-height-large' uk-slideshow = 'ratio:15:6;min-height:300'>
-       	<ul class="uk-slideshow-items">
-       	<li>
+    <div class = 'uk-padding'>
+     <div class = 'uk-margin uk-width-1-1 uk-height-large' uk-slideshow = 'ratio:15:6;min-height:300'>
+        <ul class="uk-slideshow-items">
+        <li>
           {% if post.img %}
             <img src="{{ post.img }}" alt="" uk-cover>
           {% else %}
@@ -151,11 +207,11 @@
     </div>
 </div>
     <div style = 'background-color: white' class='post uk-margin uk-padding'>
-	<center>
-		<h1 style = 'color:red'><strong><u>{{ post.headline }}</u></strong></h1>
-	</center>
-	<p>Written by <strong><a href = '/user/{{ post.username }}'>{{ post.username }}</a></strong> on {{ post.date }}</p>
-	{{ post.content|safe }}
+    <center>
+        <h1 style = 'color:red'><strong><u>{{ post.headline }}</u></strong></h1>
+    </center>
+    <p>Written by <strong><a href = '/user/{{ post.username }}'>{{ post.username }}</a></strong> on {{ post.date }}</p>
+    {{ post.content|safe }}
      </div>
 
      <div uk-grid>
@@ -266,25 +322,25 @@
         </div>        
     <!-------------------------------------------------------------------------------------------------------------->
      <div style="background-color:white">
-     	<h3 style="color:grey"><strong>Also Read</strong></h3>
-     	<hr>
-     	<div uk-grid>
+        <h3 style="color:grey"><strong>Also Read</strong></h3>
+        <hr>
+        <div uk-grid>
         {% for i in also_read %}
-     	<div class="uk-margin-large-left uk-card uk-card-default uk-width-1-4@m uk-width-1-1@s">
-    		<a href = '/post/{{ i.post_id }}'>
+        <div class="uk-margin-large-left uk-card uk-card-default uk-width-1-4@m uk-width-1-1@s">
+            <a href = '/post/{{ i.post_id }}'>
             <div class="uk-card-media-top ">
                 <img src="{{ i.img.url }}" alt="">
             </div>
             <div class="uk-card-body">
-            	<span>{{ i.date }}</span>
-            	<span class="uk-badge">{{ i.category }}</span>
+                <span>{{ i.date }}</span>
+                <span class="uk-badge">{{ i.category }}</span>
                 <h3 class="uk-card-title">{{ i.heading }}</h3>
             </div>
         </a>
-        </div>	
-     	{% endfor %}
-     	</div>
+        </div>  
+        {% endfor %}
+        </div>
      </div>
-     		
+            
 </body>
 </html>

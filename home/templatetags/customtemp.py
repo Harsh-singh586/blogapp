@@ -1,6 +1,6 @@
 from django import template
 import datetime
-from home.models import Reaction,Comments,Page
+from home.models import Reaction,Comments,Page,Stats
 register = template.Library()
 
 @register.simple_tag
@@ -23,7 +23,7 @@ def totallike(username):
     q = []
     inst = Page.objects.filter(username = username)
     for i in inst:
-    	q.append(i.post_id)
+        q.append(i.post_id)
     totallike = Reaction.objects.filter(post_id__in = q, reaction = True).count()
     return totallike
 
@@ -32,7 +32,7 @@ def totaldislike(username):
     q = []
     inst = Page.objects.filter(username = username)
     for i in inst:
-    	q.append(i.post_id)
+        q.append(i.post_id)
     totaldislike = Reaction.objects.filter(post_id__in = q, reaction = False).count()
     return totaldislike
 
@@ -41,6 +41,16 @@ def totalcomment(username):
     q = []
     inst = Page.objects.filter(username = username)
     for i in inst:
-    	q.append(i.post_id)
+        q.append(i.post_id)
     totalcomment = Comments.objects.filter(post_id__in = q).count()
     return totalcomment
+
+@register.simple_tag
+def views(post_id):
+    view = Stats.objects.filter(post_id = post_id).count()
+    return view
+
+@register.simple_tag
+def totalviews(username):
+    view = Stats.objects.filter(author = username).count()
+    return view
