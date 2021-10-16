@@ -44,7 +44,7 @@ def create_key():
 
 def send_mail(to, subject, content):
 	message = Mail(
-        from_email='codersintense@gmail.com',
+        from_email='xxxxxxx',
         to_emails= to,
         subject= subject,
         html_content = content)
