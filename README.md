@@ -16,4 +16,4 @@ __Tech Stack__
     - Django
     - PostgreSQL
     
-![screenshot](/blogapp.png)
+![screenshot](/bpogapp.png)
